@@ -6,15 +6,23 @@ import streamlit as st
 # Get the environment variable or default to an empty string
 service_account_key_str = os.environ.get('GEE_SERVICE_ACCOUNT_KEY', '')
 
-# Check if the string is not empty before trying to load JSON
-if service_account_key_str:
-    service_account_key = json.loads(service_account_key_str)
-    # Use the service account for authentication
-    credentials = ee.ServiceAccountCredentials(email=service_account_key['client_email'], key_data=service_account_key['private_key'])
-    ee.Initialize(credentials)
-else:
-    print("GEE_SERVICE_ACCOUNT_KEY is not set!")
-    service_account_key = {}
+
+# Retrieve the service account key from Streamlit's secrets
+service_account_key = st.secrets["GEE_SERVICE_ACCOUNT_KEY"]
+# Use the service account for authentication
+credentials = ee.ServiceAccountCredentials(email=service_account_key['client_email'], key_data=service_account_key['private_key'])
+ee.Initialize(credentials)
+
+
+# # Check if the string is not empty before trying to load JSON
+# if service_account_key_str:
+#     service_account_key = json.loads(service_account_key_str)
+#     # Use the service account for authentication
+#     credentials = ee.ServiceAccountCredentials(email=service_account_key['client_email'], key_data=service_account_key['private_key'])
+#     ee.Initialize(credentials)
+# else:
+#     print("GEE_SERVICE_ACCOUNT_KEY is not set!")
+#     service_account_key = {}
 
 # import streamlit as st
 # import os
