@@ -38,9 +38,10 @@ ee.Initialize(credentials)
 
 st.title("Visualizing Landsat Data with Earth Engine and Streamlit")
 # Define a function to visualize Landsat data
+
 def visualize_landsat_data(latitude, longitude):
     # Define a region of interest
-    roi = ee.Geometry.Point([longitude, latitude])
+    roi = ee.Geometry.Point([longitude, latitude]).buffer(10000)  # 10km buffer around the point
 
     # Fetch a Landsat image
     image = ee.ImageCollection('LANDSAT/LC08/C01/T1_SR') \
@@ -51,13 +52,36 @@ def visualize_landsat_data(latitude, longitude):
     vis_params = {
         'min': 0,
         'max': 3000,
-        'bands': ['B4', 'B3', 'B2']  # RGB
+        'bands': ['B4', 'B3', 'B2'],  # RGB
+        'region': roi,
+        'dimensions': 512
     }
 
     # Generate a URL for the image
     url = image.getThumbUrl(vis_params)
 
     return url
+
+# def visualize_landsat_data(latitude, longitude):
+#     # Define a region of interest
+#     roi = ee.Geometry.Point([longitude, latitude])
+
+#     # Fetch a Landsat image
+#     image = ee.ImageCollection('LANDSAT/LC08/C01/T1_SR') \
+#         .filterBounds(roi) \
+#         .first()
+
+#     # Define visualization parameters
+#     vis_params = {
+#         'min': 0,
+#         'max': 3000,
+#         'bands': ['B4', 'B3', 'B2']  # RGB
+#     }
+
+#     # Generate a URL for the image
+#     url = image.getThumbUrl(vis_params)
+
+#     return url
 
 # Get user input for latitude and longitude
 latitude = st.number_input("Enter Latitude", value=37.7749)  # Default to San Francisco
